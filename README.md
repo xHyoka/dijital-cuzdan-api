@@ -12,6 +12,8 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 - Katmanlı mimari (Controller / Service / Repository)
 - DTO pattern, validation (`@Valid`, `@NotBlank`, `@Email`)
 - Global exception handling (`@RestControllerAdvice`)
+-  Bakiye sorgulama
+- Swagger UI ile interaktif API dokümantasyonu (http://localhost:8080/swagger-ui/index.html)
 
 ## Kullanılan Teknolojiler
 
