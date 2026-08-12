@@ -110,4 +110,4 @@ Handler
 ## Geliştirici
 
 **Tunahan Can**  
-GitHub: [github.com/kullaniciadin](https://github.com/xHyoka)
+GitHub: [github.com/xHyoka](https://github.com/xHyoka)
