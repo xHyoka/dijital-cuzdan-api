@@ -4,6 +4,7 @@ import com.tunahan.starter.DTO.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface IAccountService {
@@ -16,4 +17,6 @@ public interface IAccountService {
     public AccountResponseDto withdraw(Integer fromAccountId, WithDrawRequestDto dto);
 
     public List<TransactionResponseDto> transactionHistory(Integer accountId);
+
+    public BigDecimal getBalance(Long accountId);
 }

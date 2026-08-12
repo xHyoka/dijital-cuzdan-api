@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class AccountServiceImpl implements IAccountService {
         Account fromAccount = accountRepository.findById(fromAccountId)
                 .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
         if (fromAccount.getBalance().compareTo(dto.getAmount()) < 0 ){
-            throw new InsufficientBalanceException()"Yetersiz bakiye");
+            throw new InsufficientBalanceException("Yetersiz bakiye");
         }
     fromAccount.setBalance(fromAccount.getBalance().subtract(dto.getAmount()));
         Account toAccount = accountRepository.findById(dto.getToAccountId())
@@ -123,6 +124,10 @@ public class AccountServiceImpl implements IAccountService {
     return transactionResponseDtos;
     }
 
-
+    public BigDecimal getBalance (Long accountId){
+        Account account = accountRepository.findById(accountId.intValue()).
+                orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
+        return account.getBalance();
+    }
 
 }
