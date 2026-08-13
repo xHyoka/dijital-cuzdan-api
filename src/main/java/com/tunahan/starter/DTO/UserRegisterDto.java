@@ -13,7 +13,7 @@ public class UserRegisterDto {
     @NotBlank(message = "Kullanıcı adı boş olamaz")
     private String username;
 
-    @NotBlank(message = "Şifre adı boş olamaz")
+    @NotBlank(message = "Şifre kısmı boş olamaz")
     private String password;
 
     @NotBlank(message = "TC Kimlik adı boş olamaz")
