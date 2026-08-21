@@ -8,7 +8,6 @@ import com.tunahan.starter.model.User;
 import com.tunahan.starter.repository.UserRepository;
 import com.tunahan.starter.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

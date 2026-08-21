@@ -11,6 +11,6 @@ public class TestController {
 
     @GetMapping("/hello")
     public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Tebrikler! JWT Token ile korumalı kapıdan geçmeyi başardın 🚀");
+        return ResponseEntity.ok("Tebrikler! JWT Token ile korumalı kapıdan geçmeyi başardın ");
     }
 }
