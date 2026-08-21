@@ -38,7 +38,7 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 
 **1) Repoyu klonla:**
 ```bash
-git clone https://github.com/kullaniciadin/dijital-cuzdan-api.git
+git clone https://github.com/xHyoka/dijital-cuzdan-api.git
 cd dijital-cuzdan-api
 ```
 
