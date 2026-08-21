@@ -14,6 +14,7 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 - Global exception handling (`@RestControllerAdvice`)
 -  Bakiye sorgulama
 - Swagger UI ile interaktif API dokümantasyonu (http://localhost:8080/swagger-ui/index.html)
+- PasswordEncoder ile güvenli şifre değiştirme endpoint'i
 
 ## Kullanılan Teknolojiler
 
