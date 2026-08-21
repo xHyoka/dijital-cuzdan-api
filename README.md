@@ -15,6 +15,7 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 -  Bakiye sorgulama
 - Swagger UI ile interaktif API dokümantasyonu (http://localhost:8080/swagger-ui/index.html)
 - PasswordEncoder ile güvenli şifre değiştirme endpoint'i
+- JWT tabanlı kimlik doğrulama (authentication) ve yetkilendirme (authorization)
 
 ## Kullanılan Teknolojiler
 
@@ -24,7 +25,8 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 - PostgreSQL
 - Lombok
 - Maven
-
+- Spring Security
+- JWT 
 ## Kurulum
 
 ### Gereksinimler
