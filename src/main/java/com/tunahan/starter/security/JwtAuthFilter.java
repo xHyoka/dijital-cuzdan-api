@@ -1,6 +1,7 @@
 package com.tunahan.starter.security;
 
 
+import com.tunahan.starter.service.TokenBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
 
     @Override
@@ -34,6 +36,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     return;
     }
     String token =authHeader.substring(7);
+
+    if (tokenBlacklistService.isBlackListed(token)){
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+    }
+
+
     if (!jwtUtil.isTokenValid(token)){
     filterChain.doFilter(request,response);
     return;

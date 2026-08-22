@@ -7,16 +7,14 @@ import com.tunahan.starter.controller.IAuthController;
 import com.tunahan.starter.model.User;
 import com.tunahan.starter.repository.UserRepository;
 import com.tunahan.starter.security.JwtUtil;
+import com.tunahan.starter.service.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,6 +24,7 @@ public class AuthControllerImpl implements IAuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final TokenBlacklistService tokenBlacklistService;
 
 
     @PostMapping("/register")
@@ -54,8 +53,18 @@ public class AuthControllerImpl implements IAuthController {
     );
     User user = userRepository.findByUsername(request.getUsername())
             .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı"));
-    String token = jwtUtil.GenerateToken(user.getUsername(),user.getRole());
+    String token = jwtUtil.generateToken(user.getUsername(),user.getRole());
 
     return ResponseEntity.ok(new LoginResponse(token));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader){
+        String token = authHeader.substring(7);
+        long expiration = jwtUtil.extractExpiration(token) - System.currentTimeMillis();
+        tokenBlacklistService.blacklistToken(token,expiration);
+        return ResponseEntity.ok("Çıkış yapıldı");
+    }
+
+
 }
