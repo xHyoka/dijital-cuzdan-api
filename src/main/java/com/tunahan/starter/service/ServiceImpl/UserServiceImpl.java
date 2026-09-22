@@ -3,6 +3,7 @@ package com.tunahan.starter.service.ServiceImpl;
 
 import com.tunahan.starter.DTO.*;
 import com.tunahan.starter.exception.AccountNotFoundException;
+import com.tunahan.starter.exception.WrongPasswordException;
 import com.tunahan.starter.model.Account;
 import com.tunahan.starter.model.User;
 import com.tunahan.starter.repository.UserRepository;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,11 +32,13 @@ public class UserServiceImpl implements IUserService {
         User user = new User();
         BeanUtils.copyProperties(registerDto,user);
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+
         Account account = new Account();
         account.setAccountNumber(UUID.randomUUID().toString().substring(0, 10).toUpperCase());
         account.setBalance(BigDecimal.ZERO);
         account.setUser(user);
-        user.setAccount(account);
+
+        user.setAccounts(new ArrayList<>(List.of(account)));
         User savedUser = userRepository.save(user);
         UserResponseDto responseDto = new UserResponseDto();
         BeanUtils.copyProperties(savedUser,responseDto);
@@ -56,7 +61,7 @@ public class UserServiceImpl implements IUserService {
             user.setPassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
             userRepository.save(user);
         }else{
-            throw new WrongThreadException("Şifreniz yanlıştır lütfen tekrar deneyiniz");
+            throw new WrongPasswordException("Şifreniz yanlıştır lütfen tekrar deneyiniz");
         }
     }
 }

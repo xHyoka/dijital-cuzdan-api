@@ -23,4 +23,7 @@ public interface IAccountController {
 
     public ResponseEntity<BigDecimal> getBalance (@PathVariable Long accountId);
 
+    public AccountResponseDto createAccount(@PathVariable Integer userId);
+
+
 }

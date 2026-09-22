@@ -3,12 +3,10 @@ package com.tunahan.starter.service.AccountServiceImpl;
 import com.tunahan.starter.DTO.*;
 import com.tunahan.starter.exception.AccountNotFoundException;
 import com.tunahan.starter.exception.InsufficientBalanceException;
-import com.tunahan.starter.model.Account;
-import com.tunahan.starter.model.Transaction;
-import com.tunahan.starter.model.TransactionStatus;
-import com.tunahan.starter.model.TransactionType;
+import com.tunahan.starter.model.*;
 import com.tunahan.starter.repository.AccountRepository;
 import com.tunahan.starter.repository.TransactionRepository;
+import com.tunahan.starter.repository.UserRepository;
 import com.tunahan.starter.service.IAccountService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements IAccountService {
@@ -33,7 +32,10 @@ public class AccountServiceImpl implements IAccountService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
 
+    @Transactional
     public AccountResponseDto deposit(Integer toAccountId, DepositRequestDto dto) {
         Account account = accountRepository.findById(toAccountId)
                 .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
@@ -52,6 +54,7 @@ public class AccountServiceImpl implements IAccountService {
         return accountResponseDto;
     }
 
+    @Transactional
     public AccountResponseDto withdraw(Integer fromAccountId, WithDrawRequestDto withDrawRequestDto){
         Account account = accountRepository.findById(fromAccountId)
                 .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
@@ -129,5 +132,23 @@ public class AccountServiceImpl implements IAccountService {
                 orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
         return account.getBalance();
     }
+
+    // AccountServiceImpl'e ekle
+    public AccountResponseDto createAccount(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AccountNotFoundException("Kullanıcı bulunamadı"));
+
+        Account account = new Account();
+        account.setAccountNumber(UUID.randomUUID().toString().substring(0, 10).toUpperCase());
+        account.setBalance(BigDecimal.ZERO);
+        account.setUser(user);
+
+        Account saved = accountRepository.save(account);
+        AccountResponseDto dto = new AccountResponseDto();
+        BeanUtils.copyProperties(saved, dto);
+        return dto;
+    }
+
+
 
 }

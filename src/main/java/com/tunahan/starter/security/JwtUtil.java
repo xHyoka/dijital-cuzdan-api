@@ -36,10 +36,10 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token){
-    return parseClaims(token).getSubject();
+        return parseClaims(token).getSubject();
     }
 
-    public String extractRole(String token){
+    public String extractRole(String token) {
         return parseClaims(token).get("role",String.class);
     }
 

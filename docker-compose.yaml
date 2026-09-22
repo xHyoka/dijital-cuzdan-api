@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+    app:
+      build: .
+      ports:
+        - "8080:8080"
+      depends_on:
+        - postgresd
+        - redis
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgresd:5432/Banka
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: 1968Tuna
+        SPRING_DATA_REDIS_HOST: redis
+        SPRING_DATA_REDIS_PORT: 1453
+
+    postgresd:
+      image: postgres:15
+      environment:
+        POSTGRES_DB: Banka
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: 1968Tuna
+      ports:
+        - "5433:5432"
+
+    redis:
+      image: redis:7
+      ports:
+        - "1453:6379"

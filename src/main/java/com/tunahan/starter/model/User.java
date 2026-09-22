@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +25,6 @@ public class User {
     private String tcKimlikNo;
     private String email;
     private String role;
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private Account account;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Account> accounts;
 }

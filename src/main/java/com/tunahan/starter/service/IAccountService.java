@@ -19,4 +19,6 @@ public interface IAccountService {
     public List<TransactionResponseDto> transactionHistory(Integer accountId);
 
     public BigDecimal getBalance(Long accountId);
+
+    public AccountResponseDto createAccount(Integer userId);
 }

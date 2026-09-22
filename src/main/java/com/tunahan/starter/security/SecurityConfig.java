@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login","/auth/register").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/redis/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
