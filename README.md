@@ -16,6 +16,8 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 - Swagger UI ile interaktif API dokümantasyonu (http://localhost:8080/swagger-ui/index.html)
 - PasswordEncoder ile güvenli şifre değiştirme endpoint'i
 - JWT tabanlı kimlik doğrulama (authentication) ve yetkilendirme (authorization)
+- Unit testler (JUnit 5)
+- Redis ile token blacklist (logout sonrası token geçersiz kılma)
 
 ## Kullanılan Teknolojiler
 
@@ -26,7 +28,11 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 - Lombok
 - Maven
 - Spring Security
-- JWT 
+- JWT
+- JUnit 5, Mockito
+- Redis (token blacklist)
+
+
 ## Kurulum
 
 ### Gereksinimler
@@ -37,73 +43,71 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 ### Adımlar
 
 **1) Repoyu klonla:**
-```bash
 git clone https://github.com/xHyoka/dijital-cuzdan-api.git
 cd dijital-cuzdan-api
-```
 
-**2) Veritabanı oluştur:**
-PostgreSQL'de yeni bir veritabanı oluştur (örneğin: `Banka`)
+**2) Veritabanı oluştur:** PostgreSQL'de yeni bir veritabanı oluştur (örneğin: `Banka`)
 
-**3) `application.properties` dosyasını düzenle:**
-```properties
+**3) Redis'i çalıştır (Docker ile):**
+docker run -d -p 6379:6379 --name redis-container redis
+
+**4) `application.properties` dosyasını düzenle:**
 spring.datasource.url=jdbc:postgresql://localhost:5432/VERITABANI_ADINIZ
 spring.datasource.username=KULLANICI_ADINIZ
 spring.datasource.password=SIFRENIZ
 spring.jpa.hibernate.ddl-auto=update
-```
 
-**4) Uygulamayı çalıştır:**
-```bash
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+
+jwt.secret=SIZIN_GIZLI_ANAHTARINIZ
+jwt.expiration=3600000
+
+**5) Uygulamayı çalıştır:**
 mvn spring-boot:run
-```
 
 Uygulama `http://localhost:8080` adresinde çalışmaya başlar.
 
 ## API Endpoint'leri
 
-### Kullanıcı
-| Method | URL | Açıklama |
-|--------|-----|----------|
-| POST | `/user/api/register` | Yeni kullanıcı kaydı |
+### Kimlik Doğrulama
+
+| Method | URL                  | Açıklama                          |
+| ------ | -------------------- | ---------------------------------- |
+| POST   | `/auth/register`     | Yeni kullanıcı kaydı               |
+| POST   | `/auth/login`        | Giriş yap, JWT token al            |
+| POST   | `/auth/logout`       | Çıkış yap, token'ı blacklist'e ekle |
 
 ### Hesap İşlemleri
-| Method | URL | Açıklama |
-|--------|-----|----------|
-| POST | `/account/api/deposit/{accountId}` | Para yatırma |
-| POST | `/account/api/withdraw/{accountId}` | Para çekme |
-| POST | `/account/api/transfer/{fromAccountId}` | Para transferi |
-| GET | `/account/api/history/{accountId}` | İşlem geçmişi |
 
-## Örnek İstekler
+| Method | URL                                     | Açıklama       |
+| ------ | ---------------------------------------- | -------------- |
+| POST   | `/account/api/deposit/{accountId}`       | Para yatırma   |
+| POST   | `/account/api/withdraw/{accountId}`      | Para çekme     |
+| POST   | `/account/api/transfer/{fromAccountId}`  | Para transferi |
+| GET    | `/account/api/history/{accountId}`       | İşlem geçmişi  |
 
-### Kullanıcı Kaydı
-```json
-POST /user/api/register
+**Not:** Hesap işlemleri endpoint'leri JWT ile korumalıdır. İsteklerde `Authorization: Bearer <token>` header'ı gönderilmelidir.
+
+### Giriş Yapma
+
+POST /auth/login
 {
     "username": "tunahan",
-    "password": "1234",
-    "tcKimlikNo": "12345678901",
-    "email": "tunahan@test.com"
+    "password": "1234"
 }
-```
 
-### Para Yatırma
-```json
-POST /account/api/deposit/1
+Response:
 {
-    "amount": 500
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
-```
 
-### Para Transferi
-```json
-POST /account/api/transfer/1
-{
-    "toAccountId": 2,
-    "amount": 100
-}
-```
+### Çıkış Yapma
+
+POST /auth/logout
+Header: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+Response: "Çıkış yapıldı"
 
 ## Mimari
 Controller → Service → Repository → PostgreSQL
