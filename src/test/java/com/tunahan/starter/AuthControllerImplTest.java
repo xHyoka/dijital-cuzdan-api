@@ -3,15 +3,22 @@ package com.tunahan.starter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tunahan.starter.DTO.LoginRequest;
 import com.tunahan.starter.DTO.UserRegisterDto;
+import com.tunahan.starter.controller.AccountControllerImpl.AccountControllerImpl;
+import com.tunahan.starter.controller.AuthControllerImpl.AuthControllerImpl;
 import com.tunahan.starter.model.User;
 import com.tunahan.starter.repository.UserRepository;
+import com.tunahan.starter.security.CustomUserDetailService;
+import com.tunahan.starter.security.JwtAuthFilter;
 import com.tunahan.starter.security.JwtUtil;
+import com.tunahan.starter.security.SecurityConfig;
 import com.tunahan.starter.service.TokenBlacklistService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +34,17 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@WebMvcTest(controllers = AuthControllerImpl.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = {
+                        SecurityConfig.class,
+                        AccountControllerImpl.class,
+                        JwtAuthFilter.class,
+                        CustomUserDetailService.class,
+                        TokenBlacklistService.class
+                }
+        ))
 @AutoConfigureMockMvc(addFilters = false)
 public class AuthControllerImplTest {
 
@@ -61,6 +78,7 @@ public class AuthControllerImplTest {
         dto.setUsername("tunahan");
         dto.setPassword("1234");
         dto.setEmail("tunahan@mail.com");
+        dto.setTcKimlikNo("12345678901");
 
         when(userRepository.findByUsername("tunahan")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("1234")).thenReturn("hashedPassword");
@@ -78,6 +96,8 @@ public class AuthControllerImplTest {
         UserRegisterDto dto = new UserRegisterDto();
         dto.setUsername("tunahan");
         dto.setPassword("1234");
+        dto.setEmail("tunahan@mail.com");
+        dto.setTcKimlikNo("12345678901");
 
         User existingUser = new User();
         existingUser.setUsername("tunahan");
