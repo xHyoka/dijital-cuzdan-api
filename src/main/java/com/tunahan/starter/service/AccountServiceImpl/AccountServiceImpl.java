@@ -13,6 +13,8 @@ import com.tunahan.starter.service.IAccountService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -112,8 +114,7 @@ public class AccountServiceImpl implements IAccountService {
         Account transactionAccount = getOwnedAccount(accountId,username);
 
         List<Transaction> transactionList = transactionRepository.
-                findByFromAccountOrToAccountOrderByCreatedAtDesc(transactionAccount,transactionAccount);
-        List<TransactionResponseDto> transactionResponseDtos = new ArrayList<>();
+                findByFromAccountOrToAccountOrderByTimestampDesc(transactionAccount, transactionAccount);        List<TransactionResponseDto> transactionResponseDtos = new ArrayList<>();
         for (Transaction transaction : transactionList){
             TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
             BeanUtils.copyProperties(transaction,transactionResponseDto);
@@ -135,8 +136,8 @@ public class AccountServiceImpl implements IAccountService {
         return account.getBalance();
     }
 
-    public AccountResponseDto createAccount(Integer userId) {
-        User user = userRepository.findById(userId)
+    public AccountResponseDto createAccount(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException("Kullanıcı bulunamadı"));
 
         Account account = new Account();

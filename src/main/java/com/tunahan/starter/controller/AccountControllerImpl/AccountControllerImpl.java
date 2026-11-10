@@ -52,9 +52,9 @@ public class AccountControllerImpl {
         return ResponseEntity.ok(accountService.getBalance(accountId,currentUser.getUsername()));
     }
 
-    @PostMapping("/create/{userId}")
-    public AccountResponseDto createAccount(@PathVariable Integer userId) {
-        return accountService.createAccount(userId);
+    @PostMapping("/create")
+    public AccountResponseDto createAccount(@AuthenticationPrincipal UserDetails currentUser) {
+        return accountService.createAccount(currentUser.getUsername());
     }
 
 }

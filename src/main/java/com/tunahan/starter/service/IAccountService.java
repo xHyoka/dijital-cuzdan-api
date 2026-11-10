@@ -25,5 +25,5 @@ public interface IAccountService {
     public BigDecimal getBalance(Integer accountId,
                                  String username);
 
-    public AccountResponseDto createAccount(Integer userId);
+    public AccountResponseDto createAccount(String username);
 }
