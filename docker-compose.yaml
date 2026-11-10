@@ -1,4 +1,4 @@
-version: '3.8'
+
 services:
     app:
       build: .
@@ -8,18 +8,19 @@ services:
         - postgresd
         - redis
       environment:
+        JWT_SECRET: ${JWT_SECRET}
         SPRING_DATASOURCE_URL: jdbc:postgresql://postgresd:5432/Banka
         SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: 1968Tuna
+        SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
         SPRING_DATA_REDIS_HOST: redis
-        SPRING_DATA_REDIS_PORT: 1453
+        SPRING_DATA_REDIS_PORT: 6379
 
     postgresd:
       image: postgres:15
       environment:
         POSTGRES_DB: Banka
         POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: 1968Tuna
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
       ports:
         - "5433:5432"
 

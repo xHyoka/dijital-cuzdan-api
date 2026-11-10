@@ -9,16 +9,21 @@ import java.util.List;
 
 public interface IAccountService {
 
-    public AccountResponseDto transaction(@PathVariable Integer toAccountId,
-                                      @RequestBody TransferRequestDto dto);
+    public AccountResponseDto transaction( Integer fromAcountId,
+                                       TransferRequestDto dto,
+                                          String username);
 
-    public AccountResponseDto deposit(Integer toAccountId, DepositRequestDto dto);
+    public AccountResponseDto deposit(Integer toAccountId, DepositRequestDto dto,
+                                      String username);
 
-    public AccountResponseDto withdraw(Integer fromAccountId, WithDrawRequestDto dto);
+    public AccountResponseDto withdraw(Integer fromAccountId, WithDrawRequestDto dto,
+                                       String username);
 
-    public List<TransactionResponseDto> transactionHistory(Integer accountId);
+    public List<TransactionResponseDto> transactionHistory(Integer accountId,
+                                                           String username);
 
-    public BigDecimal getBalance(Long accountId);
+    public BigDecimal getBalance(Integer accountId,
+                                 String username);
 
     public AccountResponseDto createAccount(Integer userId);
 }

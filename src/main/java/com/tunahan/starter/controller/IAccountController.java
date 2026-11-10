@@ -11,17 +11,17 @@ import java.util.List;
 public interface IAccountController {
 
     public AccountResponseDto deposit(@PathVariable Integer toAccountId,
-                                      @RequestBody DepositRequestDto dto);
+                                      @RequestBody DepositRequestDto dto,String username);
 
     public AccountResponseDto withdraw(@PathVariable Integer fromAccountId,
-                                       @RequestBody WithDrawRequestDto dto);
+                                       @RequestBody WithDrawRequestDto dto,String username);
 
     public AccountResponseDto transaction(@PathVariable Integer toAccountId,
-                                          @RequestBody TransferRequestDto transferRequestDto);
+                                          @RequestBody TransferRequestDto transferRequestDto,String username);
 
-    public List<TransactionResponseDto> transactionHistory(Integer accountId);
+    public List<TransactionResponseDto> transactionHistory(Integer accountId,String username);
 
-    public ResponseEntity<BigDecimal> getBalance (@PathVariable Long accountId);
+    public ResponseEntity<BigDecimal> getBalance (@PathVariable Long accountId,String username);
 
     public AccountResponseDto createAccount(@PathVariable Integer userId);
 

@@ -1,8 +1,10 @@
 package com.tunahan.starter.service.AccountServiceImpl;
 
 import com.tunahan.starter.DTO.*;
+import com.tunahan.starter.exception.AccountAccessDeniedException;
 import com.tunahan.starter.exception.AccountNotFoundException;
 import com.tunahan.starter.exception.InsufficientBalanceException;
+import com.tunahan.starter.exception.InvalidTransitionException;
 import com.tunahan.starter.model.*;
 import com.tunahan.starter.repository.AccountRepository;
 import com.tunahan.starter.repository.TransactionRepository;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -36,9 +39,8 @@ public class AccountServiceImpl implements IAccountService {
     private UserRepository userRepository;
 
     @Transactional
-    public AccountResponseDto deposit(Integer toAccountId, DepositRequestDto dto) {
-        Account account = accountRepository.findById(toAccountId)
-                .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
+    public AccountResponseDto deposit(Integer toAccountId, DepositRequestDto dto,String username) {
+        Account account = getOwnedAccount(toAccountId,username);
         account.setBalance(account.getBalance().add(dto.getAmount()));
         Account savedAccount = accountRepository.save(account);
         Transaction transaction = new Transaction();
@@ -55,9 +57,8 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Transactional
-    public AccountResponseDto withdraw(Integer fromAccountId, WithDrawRequestDto withDrawRequestDto){
-        Account account = accountRepository.findById(fromAccountId)
-                .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
+    public AccountResponseDto withdraw(Integer fromAccountId, WithDrawRequestDto withDrawRequestDto,String username){
+        Account account = getOwnedAccount(fromAccountId,username);
         if (account.getBalance().compareTo(withDrawRequestDto.getAmount()) < 0) {
             throw new InsufficientBalanceException("Yetersiz bakiye");
         }
@@ -77,9 +78,12 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Transactional
-    public AccountResponseDto transaction(Integer fromAccountId,TransferRequestDto dto){
-        Account fromAccount = accountRepository.findById(fromAccountId)
-                .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
+    public AccountResponseDto transaction(Integer fromAccountId,TransferRequestDto dto,String username){
+
+        if (fromAccountId.equals(dto.getToAccountId())){
+            throw new InvalidTransitionException("Kendi hesabına transfer işlemi yapamazsın.");
+        }
+        Account fromAccount = getOwnedAccount(fromAccountId,username);
         if (fromAccount.getBalance().compareTo(dto.getAmount()) < 0 ){
             throw new InsufficientBalanceException("Yetersiz bakiye");
         }
@@ -103,13 +107,12 @@ public class AccountServiceImpl implements IAccountService {
     }
 
 
-    public List<TransactionResponseDto> transactionHistory(Integer accountId){
+    public List<TransactionResponseDto> transactionHistory(Integer accountId,String username){
 
-        Account transactionAccount = accountRepository.findById(accountId)
-                .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
+        Account transactionAccount = getOwnedAccount(accountId,username);
 
         List<Transaction> transactionList = transactionRepository.
-                findByFromAccountOrToAccount(transactionAccount,transactionAccount);
+                findByFromAccountOrToAccountOrderByCreatedAtDesc(transactionAccount,transactionAccount);
         List<TransactionResponseDto> transactionResponseDtos = new ArrayList<>();
         for (Transaction transaction : transactionList){
             TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
@@ -127,13 +130,11 @@ public class AccountServiceImpl implements IAccountService {
     return transactionResponseDtos;
     }
 
-    public BigDecimal getBalance (Long accountId){
-        Account account = accountRepository.findById(accountId.intValue()).
-                orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
+    public BigDecimal getBalance (Integer accountId,String username){
+        Account account = getOwnedAccount(accountId,username);
         return account.getBalance();
     }
 
-    // AccountServiceImpl'e ekle
     public AccountResponseDto createAccount(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AccountNotFoundException("Kullanıcı bulunamadı"));
@@ -150,5 +151,11 @@ public class AccountServiceImpl implements IAccountService {
     }
 
 
+
+
+    private Account getOwnedAccount(Integer accountId, String username) {
+        return accountRepository.findByIdAndUserUsername(accountId, username)
+                .orElseThrow(() -> new AccountNotFoundException("Hesap bulunamadı"));
+    }
 
 }

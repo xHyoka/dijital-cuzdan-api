@@ -44,7 +44,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleWrongPassword(WrongPasswordException ex){
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),ex.getMessage());
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
-    }
+        }
+
+        @ExceptionHandler(AccountAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccountAccessDeniedException ex){
+        ErrorResponse error = new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage());
+        return new ResponseEntity<>(error,HttpStatus.FORBIDDEN);
+        }
+
+        @ExceptionHandler(InvalidTransitionException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidTransition(InvalidTransitionException ex){
+        ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+        }
 
     }
 

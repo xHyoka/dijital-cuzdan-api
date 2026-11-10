@@ -49,7 +49,7 @@ public class JwtUtil {
 
     public boolean isTokenValid(String token){
     try {
-    parseClaims(token);
+     parseClaims(token);
     return true;
     }catch (JwtException | IllegalArgumentException e){
         return false;
