@@ -1,5 +1,6 @@
 package com.tunahan.starter;
 
+
 import com.tunahan.starter.DTO.*;
 import com.tunahan.starter.controller.AccountControllerImpl.AccountControllerImpl;
 import com.tunahan.starter.controller.AuthControllerImpl.AuthControllerImpl;
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.math.BigDecimal;
-
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -45,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 }
         ))
 @AutoConfigureMockMvc(addFilters = false)
+@WithMockUser(username = "ali")
 public class AccountControllerImplTest {
 
     @Autowired
@@ -71,7 +73,7 @@ public class AccountControllerImplTest {
         AccountResponseDto response = new AccountResponseDto();
         response.setBalance(BigDecimal.valueOf(150));
 
-        when(accountService.deposit(eq(1),any(DepositRequestDto.class)))
+        when(accountService.deposit(eq(1),any(DepositRequestDto.class),eq("ali")))
                 .thenReturn(response);
 
         mockMvc.perform(post("/account/api/deposit/1")
@@ -93,7 +95,7 @@ public class AccountControllerImplTest {
         AccountResponseDto response = new AccountResponseDto();
         response.setBalance(BigDecimal.valueOf(50));
 
-        when(accountService.withdraw(eq(1), any(WithDrawRequestDto.class)))
+        when(accountService.withdraw(eq(1), any(WithDrawRequestDto.class),eq("ali")))
                 .thenReturn(response);
 
         mockMvc.perform(post("/account/api/withdraw/1")
@@ -114,7 +116,7 @@ public class AccountControllerImplTest {
         AccountResponseDto response = new AccountResponseDto();
         response.setBalance(BigDecimal.valueOf(70));
 
-        when(accountService.transaction(eq(1), any(TransferRequestDto.class)))
+        when(accountService.transaction(eq(1), any(TransferRequestDto.class),eq("ali")))
                 .thenReturn(response);
 
         mockMvc.perform(post("/account/api/transaction/1")
@@ -128,7 +130,7 @@ public class AccountControllerImplTest {
     @Test
     @DisplayName("getBalance: 100 dönmeli")
     void getBalance_ShouldReturn100() throws Exception {
-        when(accountService.getBalance(1L))
+        when(accountService.getBalance(eq(1),eq("ali")))
                 .thenReturn(BigDecimal.valueOf(100));
 
         mockMvc.perform(get("/account/api/balance/1"))
@@ -143,9 +145,9 @@ public class AccountControllerImplTest {
         AccountResponseDto response = new AccountResponseDto();
         response.setBalance(BigDecimal.ZERO);
 
-        when(accountService.createAccount(1)).thenReturn(response);
+        when(accountService.createAccount("ali")).thenReturn(response);
 
-        mockMvc.perform(post("/account/api/create/1"))
+        mockMvc.perform(post("/account/api/create"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.balance").value(0));
     }
@@ -156,7 +158,7 @@ public class AccountControllerImplTest {
         TransactionResponseDto t1 = new TransactionResponseDto();
         t1.setAmount(BigDecimal.valueOf(100));
 
-        when(accountService.transactionHistory(1))
+        when(accountService.transactionHistory(eq(1),eq("ali")))
                 .thenReturn(List.of(t1));
 
         mockMvc.perform(get("/account/api/history/1"))
