@@ -1,7 +1,6 @@
 package com.tunahan.starter.service.AccountServiceImpl;
 
 import com.tunahan.starter.DTO.*;
-import com.tunahan.starter.exception.AccountAccessDeniedException;
 import com.tunahan.starter.exception.AccountNotFoundException;
 import com.tunahan.starter.exception.InsufficientBalanceException;
 import com.tunahan.starter.exception.InvalidTransitionException;
@@ -12,20 +11,13 @@ import com.tunahan.starter.repository.UserRepository;
 import com.tunahan.starter.service.IAccountService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
