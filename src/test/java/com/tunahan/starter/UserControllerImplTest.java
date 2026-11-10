@@ -1,24 +1,20 @@
 package com.tunahan.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tunahan.starter.DTO.UserPasswordDto;
 import com.tunahan.starter.DTO.UserRegisterDto;
 import com.tunahan.starter.DTO.UserResponseDto;
 import com.tunahan.starter.controller.AccountControllerImpl.AccountControllerImpl;
 import com.tunahan.starter.controller.AuthControllerImpl.AuthControllerImpl;
-import com.tunahan.starter.controller.UserControllerImpl.UserControllerImpl;
 import com.tunahan.starter.repository.AccountRepository;
 import com.tunahan.starter.repository.UserRepository;
 import com.tunahan.starter.security.CustomUserDetailService;
 import com.tunahan.starter.security.JwtAuthFilter;
 import com.tunahan.starter.security.SecurityConfig;
 import com.tunahan.starter.service.AccountServiceImpl.AccountServiceImpl;
-import com.tunahan.starter.service.IUserService;
 import com.tunahan.starter.service.TokenBlacklistService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;

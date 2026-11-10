@@ -1,15 +1,11 @@
 package com.tunahan.starter;
 
 
-import com.tunahan.starter.DTO.UserPasswordDto;
 import com.tunahan.starter.DTO.UserRegisterDto;
 import com.tunahan.starter.DTO.UserResponseDto;
 import com.tunahan.starter.exception.AccountNotFoundException;
-import com.tunahan.starter.exception.WrongPasswordException;
 import com.tunahan.starter.model.User;
 import com.tunahan.starter.repository.UserRepository;
-import com.tunahan.starter.service.ServiceImpl.UserServiceImpl;
-import org.hibernate.mapping.Any;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

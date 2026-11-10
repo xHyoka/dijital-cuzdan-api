@@ -8,6 +8,7 @@ import com.tunahan.starter.model.User;
 import com.tunahan.starter.repository.UserRepository;
 import com.tunahan.starter.security.JwtUtil;
 import com.tunahan.starter.service.TokenBlacklistService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,7 @@ public class AuthControllerImpl implements IAuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register (@RequestBody UserRegisterDto userRegisterDto){
+    public ResponseEntity<String> register (@Valid @RequestBody UserRegisterDto userRegisterDto){
     if (userRepository.findByUsername(userRegisterDto.getUsername()).isPresent()){
     return ResponseEntity.badRequest().body("Bu kullanıcı adı zaten alınmış");
     }
