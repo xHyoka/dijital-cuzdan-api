@@ -18,6 +18,8 @@ Kullanıcıların hesap açıp para yatırma, çekme ve transfer yapabildiği RE
 - JWT tabanlı kimlik doğrulama (authentication) ve yetkilendirme (authorization)
 - Unit testler (JUnit 5)
 - Redis ile token blacklist (logout sonrası token geçersiz kılma)
+- Redis tabanlı Caching mekanizması ile performans optimizasyonu
+- Docker ve Docker Compose ile containerize edilmiş çalışma ortamı
 
 ## Kullanılan Teknolojiler
 
